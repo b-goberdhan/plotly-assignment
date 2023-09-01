@@ -7,7 +7,6 @@ import { User } from './entities/user.entity';
 import { UserDto } from './dto/user.dto';
 import { UserDeletedDto } from './dto/user-deleted.dto';
 import { Product } from 'src/products/entities/product.entity';
-import { ProductDto } from 'src/products/dto/product.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,41 +24,35 @@ export class UsersService {
       orders: await this.findAssociatedProducts(createUserInput.orderIds)
     });
 
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      age: user.age
-    }
+    return this.userToDto(user);
   }
 
 
   async findAll() : Promise<UserDto[]> {
-    return await this.userRepository.find();
+    const users = await this.userRepository.find({relations: {
+      orders: true
+    }});
+
+    return users.map(this.userToDto);
   }
 
   async findOne(id: string): Promise<UserDto> {
     return this.userRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateUserInput: UpdateUserInput): Promise<UserDto> {
+  async update(updateUserInput: UpdateUserInput): Promise<UserDto> {
    
-    const userToBeUpdated =  await this.userRepository.findOneBy({ id });
-    const productsToUpdate = await this.findAssociatedProducts(updateUserInput.orderIds)
-    console.log(productsToUpdate)
+    const userToBeUpdated =  await this.userRepository.findOneBy({ id: updateUserInput.id });
+    const newAssociatedProducts = await this.findAssociatedProducts(updateUserInput.orderIds)
+
     userToBeUpdated.age = updateUserInput.age || userToBeUpdated.age;
     userToBeUpdated.email = updateUserInput.email || userToBeUpdated.email;
     userToBeUpdated.name = updateUserInput.name || userToBeUpdated.name;
-    // userToBeUpdated.orders = productsToUpdate || userToBeUpdated.orders
+    userToBeUpdated.orders = newAssociatedProducts || userToBeUpdated.orders
 
     const savedUser = await this.userRepository.save(userToBeUpdated);
-    console.log(savedUser)
-    return {
-      id: savedUser.id,
-      name: savedUser.name,
-      email: savedUser.email,
-      age: savedUser.age
-    };
+
+    return this.userToDto(savedUser);
   }
 
   async remove(id: string) : Promise<UserDeletedDto> {
@@ -77,5 +70,19 @@ export class UsersService {
       })
     }
     return products;
+  }
+
+  private userToDto(user: User): UserDto {
+    return ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      age: user.age,
+      orders: user.orders?.map(product => ({
+        id: product.id,
+        name: product.name,
+        price: product.price
+      })) || []
+    })
   }
 }

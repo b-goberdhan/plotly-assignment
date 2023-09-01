@@ -16,5 +16,6 @@ export class User {
   age: number;
   
   @ManyToMany(() => Product, (product) => product.id)
+  @JoinTable()
   orders: Product[];
 }

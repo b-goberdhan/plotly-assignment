@@ -55,4 +55,12 @@ export class ProductsService {
     const deleteResult = await this.productRepository.delete({id});
     return { isDeleted: deleteResult.affected === 1 };
   }
+
+  async productToDto(product: Product) {
+    return ({
+      id: product.id,
+      name: product.name,
+      price: product.price
+    }) as ProductDto
+  }
 }

@@ -13,6 +13,5 @@ export class Product {
   price: number;
 
   @ManyToMany(() => User, (user) => user.orders)
-  @JoinTable()
   users: User[];
 }

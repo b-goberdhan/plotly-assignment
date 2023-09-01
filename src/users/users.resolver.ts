@@ -5,20 +5,20 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { GraphQLString } from 'graphql';
 import { UserDto } from './dto/user.dto';
 import { UserDeletedDto } from './dto/user-deleted.dto';
-import { ProductsService } from 'src/products/products.service';
 import { ProductDto } from 'src/products/dto/product.dto';
+import { ProductsService } from 'src/products/products.service';
 
 @Resolver(() => UserDto)
 export class UsersResolver {
 
   constructor(
-    private readonly usersService: UsersService, 
-    private readonly productService: ProductsService
+    private readonly usersService: UsersService,
+    private readonly productService: ProductsService 
   ) {}
 
   @ResolveField(() => [ProductDto])
   async orders(@Parent() user: UserDto) {
-    return await this.productService.findAllByUserId(user.id);
+    return user.orders
   }
 
   @Query(() => [UserDto], { name: 'users' })
@@ -39,7 +39,7 @@ export class UsersResolver {
   @Mutation(() => UserDto)
   async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput, 
     ) : Promise<UserDto> {
-    return await this.usersService.update(updateUserInput.id, updateUserInput);
+    return await this.usersService.update(updateUserInput);
   }
 
   @Mutation(() => UserDto)
