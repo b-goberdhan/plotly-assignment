@@ -11,11 +11,11 @@ export class UserDto {
   name?: string;
 
   @Field(() => GraphQLString, { description: 'User email', nullable: true })
-  email?: string; //todo validate email regex
+  email?: string;
 
   @Field(() => GraphQLInt, { description: 'User age', nullable: true })
   age?: number;
   
-  @Field(() => ProductDto)
+  @Field(() => [ProductDto], { nullable: true })
   orders?: ProductDto[]
 }

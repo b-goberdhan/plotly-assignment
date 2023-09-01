@@ -20,6 +20,22 @@ export class ProductsService {
     return (await this.productRepository.find()).map(product => product as ProductDto);
   }
 
+  async findAllByUserId(userId: string) : Promise<ProductDto[]> {
+    const productsForUser = await this.productRepository.find({
+      where: {
+        users: {
+          id: userId
+        }
+      }
+    });
+    
+    return productsForUser.map((product) => ({
+      id: product.id,
+      name: product.name,
+      price: product.price
+    }) as ProductDto);
+  }
+
   async findOne(id: string) : Promise<ProductDto> {
     return (await this.productRepository.findOneBy({id})) as ProductDto;
   }

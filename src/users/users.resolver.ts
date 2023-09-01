@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Parent, } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -6,18 +6,19 @@ import { GraphQLString } from 'graphql';
 import { UserDto } from './dto/user.dto';
 import { UserDeletedDto } from './dto/user-deleted.dto';
 import { ProductsService } from 'src/products/products.service';
-import { AddProductToUserInput } from './dto/add-product-to-user.input';
+import { ProductDto } from 'src/products/dto/product.dto';
 
 @Resolver(() => UserDto)
 export class UsersResolver {
 
   constructor(
     private readonly usersService: UsersService, 
+    private readonly productService: ProductsService
   ) {}
 
-  @Mutation(() => UserDto)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<UserDto> {
-    return this.usersService.create(createUserInput);
+  @ResolveField(() => [ProductDto])
+  async orders(@Parent() user: UserDto) {
+    return await this.productService.findAllByUserId(user.id);
   }
 
   @Query(() => [UserDto], { name: 'users' })
@@ -31,8 +32,8 @@ export class UsersResolver {
   }
 
   @Mutation(() => UserDto)
-  async addProduct(@Args('addProductToUserInput', { type: () => AddProductToUserInput}) addProductToUserInput : AddProductToUserInput) : Promise<UserDto> {
-    return await this.usersService.addProductToUser(addProductToUserInput.userId, addProductToUserInput.productId);
+  async createUser(@Args('createUserInput') createUserInput: CreateUserInput): Promise<UserDto> {
+    return await this.usersService.create(createUserInput);
   }
 
   @Mutation(() => UserDto)
