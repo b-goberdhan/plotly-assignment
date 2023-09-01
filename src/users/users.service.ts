@@ -29,22 +29,18 @@ export class UsersService {
 
 
   async findAll() : Promise<UserDto[]> {
-    const users = await this.userRepository.find({relations: {
-      orders: true
-    }});
-
+    const users = await this.userRepository.find();
     return users.map(this.userToDto);
   }
 
   async findOne(id: string): Promise<UserDto> {
-    return this.userRepository.findOneBy({ id });
+    return this.userToDto(await this.userRepository.findOneBy({ id }));
   }
 
   async update(updateUserInput: UpdateUserInput): Promise<UserDto> {
-   
-    const userToBeUpdated =  await this.userRepository.findOneBy({ id: updateUserInput.id });
+    // leverage relation here, no need for product repository in this!
+    const userToBeUpdated =  await this.userRepository.findOneBy({ id: updateUserInput.id, },);
     const newAssociatedProducts = await this.findAssociatedProducts(updateUserInput.orderIds)
-
     userToBeUpdated.age = updateUserInput.age || userToBeUpdated.age;
     userToBeUpdated.email = updateUserInput.email || userToBeUpdated.email;
     userToBeUpdated.name = updateUserInput.name || userToBeUpdated.name;
@@ -74,15 +70,15 @@ export class UsersService {
 
   private userToDto(user: User): UserDto {
     return ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      age: user.age,
-      orders: user.orders?.map(product => ({
-        id: product.id,
-        name: product.name,
-        price: product.price
-      })) || []
+      id: user?.id,
+      name: user?.name,
+      email: user?.email,
+      age: user?.age,
+      orders: user?.orders?.map(product => ({
+        id: product?.id,
+        name: product?.name,
+        price: product?.price
+      }))
     })
   }
 }

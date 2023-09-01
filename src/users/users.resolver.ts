@@ -18,7 +18,7 @@ export class UsersResolver {
 
   @ResolveField(() => [ProductDto])
   async orders(@Parent() user: UserDto) {
-    return user.orders
+    return await this.productService.findAllByUserId(user.id);
   }
 
   @Query(() => [UserDto], { name: 'users' })

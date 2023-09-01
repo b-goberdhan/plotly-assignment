@@ -6,38 +6,37 @@ import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { ProductDto } from './dto/product.dto';
 import { ProductDeletedDto } from './dto/product-deleted.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
 
-  constructor(@InjectRepository(Product) private productRepository: Repository<Product>) {}
+  constructor(
+    @InjectRepository(Product) private productRepository: Repository<Product>,
+    @InjectRepository(User) private userRepository: Repository<User>
+    ) {}
 
   async create(createProductInput: CreateProductInput) : Promise<ProductDto> {
-    return (await this.productRepository.save({...createProductInput})) as ProductDto;
+    return this.productToDto(await this.productRepository.save({...createProductInput}));
   }
 
   async findAll() : Promise<ProductDto[]> {
-    return (await this.productRepository.find()).map(product => product as ProductDto);
+    return (await this.productRepository.find()).map(this.productToDto);
   }
 
   async findAllByUserId(userId: string) : Promise<ProductDto[]> {
-    const productsForUser = await this.productRepository.find({
-      where: {
-        users: {
-          id: userId
-        }
-      }
+    const productsForUser = await this.userRepository.findOne({
+      relations: {
+        orders: true,
+      },
+      where: { id: userId }
     });
+    return productsForUser.orders.map(this.productToDto);
     
-    return productsForUser.map((product) => ({
-      id: product.id,
-      name: product.name,
-      price: product.price
-    }) as ProductDto);
   }
 
   async findOne(id: string) : Promise<ProductDto> {
-    return (await this.productRepository.findOneBy({id})) as ProductDto;
+    return this.productToDto((await this.productRepository.findOneBy({id})));
   }
 
   async update(id: string, updateProductInput: UpdateProductInput) : Promise<ProductDto> {
@@ -48,7 +47,7 @@ export class ProductsService {
 
       await this.productRepository.save(currentProduct);
     }
-    return currentProduct as ProductDto;
+    return this.productToDto(currentProduct);
   }
 
   async remove(id: string) : Promise<ProductDeletedDto> {
@@ -56,11 +55,11 @@ export class ProductsService {
     return { isDeleted: deleteResult.affected === 1 };
   }
 
-  async productToDto(product: Product) {
+  private productToDto(product: Product): ProductDto {
     return ({
-      id: product.id,
-      name: product.name,
-      price: product.price
+      id: product?.id,
+      name: product?.name,
+      price: product?.price
     }) as ProductDto
   }
 }

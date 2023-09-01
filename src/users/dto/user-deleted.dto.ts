@@ -3,6 +3,6 @@ import { GraphQLBoolean } from 'graphql';
 
 @ObjectType()
 export class UserDeletedDto {
-  @Field(() => GraphQLBoolean, { description: 'Was user deleted' })
+  @Field(() => GraphQLBoolean, { description: 'Details if the given user was  deleted' })
   isDeleted: boolean;
 }

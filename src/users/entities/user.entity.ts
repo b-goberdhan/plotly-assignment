@@ -1,5 +1,5 @@
-import { Product } from 'src/products/entities/product.entity';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Product } from '../../products/entities/product.entity';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -10,7 +10,7 @@ export class User {
   name: string;
 
   @Column()
-  email: string; //todo validate email regex
+  email: string;
 
   @Column()
   age: number;

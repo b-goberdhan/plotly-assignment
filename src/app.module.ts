@@ -21,8 +21,7 @@ import { Product } from './products/entities/product.entity';
       type: 'sqlite',
       database: ':memory:',
       entities: [User, Product],
-      synchronize: true, // 
-      // autoLoadEntities: true
+      synchronize: true,
     }),
     ProductsModule
 ],

@@ -1,5 +1,5 @@
-import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Product {
@@ -13,5 +13,5 @@ export class Product {
   price: number;
 
   @ManyToMany(() => User, (user) => user.orders)
-  users: User[];
+  users?: User[];
 }
