@@ -131,7 +131,7 @@ describe('ProductsService', () => {
       }
       productRepositoryMock.findOneBy.mockResolvedValue(product);
       
-      const result = await service.update(testProductId1, updatedProductInput);
+      const result = await service.update(updatedProductInput);
       expect(productRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
       expect(productRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: updatedProductInput.id });
       
@@ -149,7 +149,7 @@ describe('ProductsService', () => {
 
       productRepositoryMock.findOneBy.mockResolvedValue(null);
       
-      const result = await service.update(testProductId1, updatedProductInput);
+      const result = await service.update(updatedProductInput);
       expect(productRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
       expect(productRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: updatedProductInput.id });
       
