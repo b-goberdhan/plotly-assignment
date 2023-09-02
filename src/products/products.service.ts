@@ -12,8 +12,8 @@ import { User } from '../users/entities/user.entity';
 export class ProductsService {
 
   constructor(
-    @InjectRepository(Product) private productRepository: Repository<Product>,
-    @InjectRepository(User) private userRepository: Repository<User>
+    @InjectRepository(Product) private readonly productRepository: Repository<Product>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>
     ) {}
 
   async create(createProductInput: CreateProductInput) : Promise<ProductDto> {

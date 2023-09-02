@@ -1,73 +1,393 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# GraphQL Api Docs
+- run server with : `yarn start:dev`
+- run unit tests with `yarn test`
+- run e2e tests with `yarn test:e2e` 
+  > note that these tests generally cover a happy path to ensure most regerssions are mitigated. 
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Mutations
 
-## Installation
+### Creating a user without associating it with any orders
+```graphql
+mutation {
+  createUser(createUserInput: { name: "brandon", email: "sdsdsd@email.com", age: 21 }) {
+    id,
+    name,
+    email,
+    age
+    orders {
+      name,
+      price,
+      id
+    }
+  }
+}
 
-```bash
-$ yarn install
+```
+#### Exected Result
+
+```json
+{
+  "data": {
+    "createUser": {
+      "id": "65bc52e4-1511-4367-b96a-136c90e9a425",
+      "name": "brandon",
+      "email": "sdsdsd@email.com",
+      "age": 21,
+      "orders": []
+    }
+  }
+}
 ```
 
-## Running the app
-
-```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+### Creating a user and associating it with orders
+> Note that the order must have been created prior
+```graphql
+mutation {
+  createUser(createUserInput: { name: "name", email: "sdsdsd@email.com", age: 21, orderIds: "<guid-from-existing-product>" }) {
+    id,
+    name,
+    email,
+    age
+    orders {
+      name,
+      price,
+      id
+    }
+  }
+}
 ```
 
-## Test
+#### Expected Result
 
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+```json
+  "createUser": {
+    "id": "10a839bc-f8c8-4248-83ae-67b08d5c1e73",
+    "name": "name",
+    "email": "sdsdsd@email.com",
+    "age": 21,
+    "orders": [
+      {
+        "name": "fancy-new-product",
+        "price": 1.2,
+        "id": "07e59f7a-bd31-41d4-b365-68cab64d3d73"
+      }
+    ]
+  },
 ```
 
-## Support
+### Updating a user, changing thier email (you can still retrieve all properties of users here, I just ommited it for breveity)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```graphql
+mutation {
+  updateUser(updateUserInput: { id: "<id-of-existing-user>", email: "new@email.com"}) {
+    id,
+    email,
+  }
+}
+```
 
-## Stay in touch
+#### Expected Result
+```json
+{
+  "data": {
+    "updateUser": {
+      "id": "10a839bc-f8c8-4248-83ae-67b08d5c1e73",
+      "email": "new@email.com"
+    }
+  }
+}
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Updating a user, updating thier orders (you can still retrieve all properties of users here, I just ommited it for breveity)
 
-## License
+```graphql
+mutation {
+  updateUser(updateUserInput: { id: "<id-of-existing-user>", orderIds: ["existing-product-id"]) {
+    id,
+    orders {
+      id,
+      name,
+      price
+    }
+  }
+}
+```
 
-Nest is [MIT licensed](LICENSE).
+#### Expected Result
+
+```json
+{
+  "data": {
+    "updateUser": {
+      "id": "10a839bc-f8c8-4248-83ae-67b08d5c1e73",
+      "orders": [{
+        "id": "existing-product-id",
+        "name": "some-product",
+        "price": 1.20
+      }]
+    }
+  }
+}
+```
+> Note setting the orderIds to [] will remove the orders associated with the user.
+
+### Removing a User
+
+```graphql
+  mutation {
+    removeUser(id: "<id-of-existing-user>") {
+      isDeleted
+    }
+  }
+```
+
+#### Expected Result
+
+```json
+{
+  "data": {
+    "removeUser": {
+      "isDeleted": true // may be false if entity did not exist prior
+    }
+  }
+}
+```
+
+### Creating a product
+
+```graphql
+mutation {
+  createProduct(createProductInput: { name: "new-product", price: 1.20 }) {
+    id,
+    name,
+    price
+  }
+}
+```
+
+#### Expected Result
+
+```json
+{
+  "data": {
+    "createProduct": {
+      "id": "f75f9859-d720-4c10-b8d8-b7667a7c9d1e",
+      "name": "new-product",
+      "price": 1.2
+    }
+  }
+}
+```
+
+### Updating a product
+
+```graphql
+  mutatations {
+    updateProduct(updateProductInput: { id: "<guid-of-existing-product>", name: "new" }) {
+      id,
+      name,
+      price
+    }
+  }
+  
+```
+
+#### Expected Result
+
+```json
+{
+  "data": {
+    "updateProduct": {
+      "id": "fda3ca7a-b8d5-45cc-bb05-de81fd1909d7",
+      "name": "new",
+      "price": 1.2
+    }
+  }
+}
+```
+
+### Removing a product 
+
+```graphql
+mutation {
+  removeProduct(id: "4bf3371f-5e3b-40ed-abc0-b0ab80658a30") {
+    isDeleted
+  }
+}
+```
+
+#### Expected result 
+
+```json
+{
+  "data": {
+    "removeProduct": {
+      "isDeleted": true // may be false if entity did not exist prior
+    }
+  }
+}
+```
+
+## Queries
+
+### Query All Users and thier orders (if they are associated with an order)
+
+```graphql
+    query {
+      users {
+        id,
+        name,
+        email
+        orders {
+          id,
+          name,
+          price
+        }
+      }
+    }
+```
+
+#### Expected Result
+
+```json
+  {
+  "data": {
+    "users": [
+      {
+        "id": "501b0322-9534-423f-a61e-7d056546633d",
+        "name": "name1",
+        "email": "sdsdsd@1email.com",
+        "orders": [
+          {
+            "id": "4bf3371f-5e3b-40ed-abc0-b0ab80658a30",
+            "name": "newer product",
+            "price": 1.2
+          }
+        ]
+      },
+      {
+        "id": "e5d4c1ed-3b16-4eef-b755-c8b6f6b7cef1",
+        "name": "name2",
+        "email": "sdsdsd@2email.com",
+        "orders": []
+      },
+      {
+        "id": "67673cf5-bbcf-4f73-8b6a-b397522ea143",
+        "name": "name3",
+        "email": "sdsdsd@3email.com",
+        "orders": []
+      }
+    ]
+  }
+}
+```
+
+### Query a user by id
+
+```graphql
+  query {
+    user(id: "501b0322-9534-423f-a61e-7d056546633d") {
+    id,
+    name,
+    email,
+    orders {
+      id
+      name,
+      price
+  	}
+ }
+```
+
+#### Expected Result
+
+```json
+{
+  "data": {
+    "user": {
+      "id": "501b0322-9534-423f-a61e-7d056546633d",
+      "name": "name",
+      "email": "sdsdsd",
+      "orders": [
+        {
+          "id": "4bf3371f-5e3b-40ed-abc0-b0ab80658a30",
+          "name": "newer product",
+          "price": 1.2
+        }
+      ]
+    }
+  }
+}
+```
+> Note in this case, the user had orders, if they didnt, the list would be empty
+
+### Query All Products 
+
+```graphql
+query {
+  products {
+    name,
+    id,
+    price
+  }
+}
+```
+
+#### Expected Result
+
+```json
+{
+  "data": {
+    "products": [
+      {
+        "name": "new1",
+        "id": "ca40224a-4b30-4b3e-8995-e9d2bb50bb69",
+        "price": 1.21
+      },
+      {
+        "name": "new2",
+        "id": "fda3ca7a-b8d5-45cc-bb05-de81fd1909d7",
+        "price": 1.2
+      },
+      {
+        "name": "new3",
+        "id": "4bf3371f-5e3b-40ed-abc0-b0ab80658a30",
+        "price": 1.24
+      },
+      {
+        "name": "new4",
+        "id": "2da2853f-09d2-4d8d-b64f-11b98216d126",
+        "price": 1.25
+      }
+    ]
+  }
+}
+```
+
+
+### Query product by id
+
+```graphql
+query {
+  product(id: "ca40224a-4b30-4b3e-8995-e9d2bb50bb69") {
+    name,
+    price
+  }
+}
+```
+
+#### Expected Results
+
+```json
+{
+  "data": {
+    "product": {
+      "name": "newer product product dawg1",
+      "price": 1.20
+    }
+  }
+}
+```
+

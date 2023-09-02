@@ -11,8 +11,8 @@ import { Product } from '../products/entities/product.entity';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Product) private productRepository: Repository<Product>
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Product) private readonly productRepository: Repository<Product>
   ) {}
   
   async create(createUserInput: CreateUserInput): Promise<UserDto> {
