@@ -1,19 +1,19 @@
 import { Resolver, Query, Mutation, Args, ResolveField, Parent, } from '@nestjs/graphql';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { GraphQLString } from 'graphql';
 import { UserDto } from './dto/user.dto';
 import { UserDeletedDto } from './dto/user-deleted.dto';
-import { ProductDto } from '../products/dto/product.dto';
-import { ProductsService } from '../products/products.service';
+import { ProductDto } from '../product/dto/product.dto';
+import { ProductService } from '../product/product.service';
 
 @Resolver(() => UserDto)
-export class UsersResolver {
+export class UserResolver {
 
   constructor(
-    private readonly usersService: UsersService,
-    private readonly productService: ProductsService 
+    private readonly usersService: UserService,
+    private readonly productService: ProductService 
   ) {}
 
   @ResolveField(() => [ProductDto])

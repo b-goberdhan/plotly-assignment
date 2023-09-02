@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './user/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './users/entities/user.entity';
-import { ProductsModule } from './products/products.module';
-import { ProductEntity } from './products/entities/product.entity';
+import { UserEntity } from './user/entities/user.entity';
+import { ProductModule } from './product/product.module';
+import { ProductEntity } from './product/entities/product.entity';
 
 @Module({
   imports: [
@@ -22,8 +22,8 @@ import { ProductEntity } from './products/entities/product.entity';
       entities: [UserEntity, ProductEntity],
       synchronize: true,
     }),
-    ProductsModule,
-    UsersModule
+    ProductModule,
+    UserModule
 ],
   controllers: [AppController],
   providers: [AppService],

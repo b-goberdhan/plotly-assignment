@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductsService } from './products.service';
+import { ProductService } from './product.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
-import { UserEntity } from '../users/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { ProductDto } from './dto/product.dto';
 import { UpdateProductInput } from './dto/update-product.input';
 
 describe('ProductsService', () => {
-  let service: ProductsService;
+  let service: ProductService;
   const testProductId1 = "40134b1d-8d92-4288-8acd-cee7df2b9649";
   const testProductId2 = "50134b1d-8d92-4288-8acd-cee7df2b9648";
 
@@ -28,7 +28,7 @@ describe('ProductsService', () => {
     jest.resetAllMocks()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ProductsService,
+        ProductService,
         { 
           provide: getRepositoryToken(ProductEntity),
           useValue: productRepositoryMock
@@ -40,7 +40,7 @@ describe('ProductsService', () => {
       ],
     }).compile();
 
-    service = module.get<ProductsService>(ProductsService);
+    service = module.get<ProductService>(ProductService);
   });
 
   it('should be defined', () => {

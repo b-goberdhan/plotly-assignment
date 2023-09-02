@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { ProductEntity } from '../products/entities/product.entity';
+import { ProductEntity } from '../product/entities/product.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { In } from 'typeorm';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserInput } from './dto/update-user.input';
-import { ProductDto } from '../products/dto/product.dto';
+import { ProductDto } from '../product/dto/product.dto';
 
 describe('UsersService', () => {
-  let service: UsersService;
+  let service: UserService;
   
   const userRepositoryMock = {
     save: jest.fn(),
@@ -50,7 +50,7 @@ describe('UsersService', () => {
     jest.resetAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersService,
+        UserService,
         {
           provide: getRepositoryToken(UserEntity),
           useValue: userRepositoryMock
@@ -62,7 +62,7 @@ describe('UsersService', () => {
       ],
     }).compile();
 
-    service = module.get<UsersService>(UsersService);
+    service = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {

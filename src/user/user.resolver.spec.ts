@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersResolver } from './users.resolver';
-import { UsersService } from './users.service';
-import { ProductsService } from '../products/products.service';
+import { UserResolver } from './user.resolver';
+import { UserService } from './user.service';
+import { ProductService } from '../product/product.service';
 import { UserDto } from './dto/user.dto';
-import { ProductDto } from '../products/dto/product.dto';
+import { ProductDto } from '../product/dto/product.dto';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserDeletedDto } from './dto/user-deleted.dto';
 
-describe('UsersResolver', () => {
-  let resolver: UsersResolver;
+describe('UserResolver', () => {
+  let resolver: UserResolver;
   
   const userServiceMock = {
     findAll: jest.fn(),
@@ -46,19 +46,19 @@ describe('UsersResolver', () => {
     jest.resetAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersResolver, 
+        UserResolver, 
         {
-          provide: UsersService,
+          provide: UserService,
           useValue: userServiceMock
         },
         {
-          provide: ProductsService,
+          provide: ProductService,
           useValue: productServiceMock
         }
       ],
     }).compile();
 
-    resolver = module.get<UsersResolver>(UsersResolver);
+    resolver = module.get<UserResolver>(UserResolver);
   });
 
   it('should be defined', () => {

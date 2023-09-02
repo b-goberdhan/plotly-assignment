@@ -1,6 +1,6 @@
 import { ObjectType, Field, } from '@nestjs/graphql';
 import { GraphQLInt, GraphQLString } from 'graphql';
-import { ProductDto } from '../../products/dto/product.dto';
+import { ProductDto } from '../../product/dto/product.dto';
 
 @ObjectType()
 export class UserDto {

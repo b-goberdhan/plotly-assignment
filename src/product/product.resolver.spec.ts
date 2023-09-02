@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductsResolver } from './products.resolver';
-import { ProductsService } from './products.service';
+import { ProductResolver } from './product.resolver';
+import { ProductService } from './product.service';
 import { ProductDto } from './dto/product.dto';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { ProductDeletedDto } from './dto/product-deleted.dto';
 
-describe('ProductsResolver', () => {
-  let resolver: ProductsResolver;
+describe('ProductResolver', () => {
+  let resolver: ProductResolver;
   const productServiceMock = {
     create: jest.fn(),
     findAll: jest.fn(),
@@ -35,15 +35,15 @@ describe('ProductsResolver', () => {
     jest.resetAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ProductsResolver, 
+        ProductResolver, 
         {
-          provide: ProductsService,
+          provide: ProductService,
           useValue: productServiceMock
         }
       ],
     }).compile();
 
-    resolver = module.get<ProductsResolver>(ProductsResolver);
+    resolver = module.get<ProductResolver>(ProductResolver);
   });
 
   it('should be defined', () => {

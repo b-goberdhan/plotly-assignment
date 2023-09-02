@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { ProductsService } from './products.service';
+import { ProductService } from './product.service';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { ProductDto } from './dto/product.dto';
@@ -7,8 +7,8 @@ import { GraphQLString } from 'graphql';
 import { ProductDeletedDto } from './dto/product-deleted.dto';
 
 @Resolver(() => ProductDto)
-export class ProductsResolver {
-  constructor(private readonly productsService: ProductsService) {}
+export class ProductResolver {
+  constructor(private readonly productsService: ProductService) {}
 
   @Query(() => [ProductDto], { name: 'products' })
   async findAll() : Promise<ProductDto[]> {

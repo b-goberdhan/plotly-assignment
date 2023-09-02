@@ -6,10 +6,10 @@ import { ProductEntity } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { ProductDto } from './dto/product.dto';
 import { ProductDeletedDto } from './dto/product-deleted.dto';
-import { UserEntity } from '../users/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 
 @Injectable()
-export class ProductsService {
+export class ProductService {
 
   constructor(
     @InjectRepository(ProductEntity) private readonly productRepository: Repository<ProductEntity>,

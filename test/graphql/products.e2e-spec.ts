@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
-import { UsersService } from '../../src/users/users.service';
-import { ProductsService } from '../../src/products/products.service';
-import { ProductDto } from 'src/products/dto/product.dto';
+import { UserService } from '../../src/user/user.service';
+import { ProductService } from '../../src/product/product.service';
+import { ProductDto } from 'src/product/dto/product.dto';
 
 
 describe('GraphQL ProductResolver (e2e)', () => {
     let app: INestApplication;
-    let productService: ProductsService
-    let userService: UsersService;
+    let productService: ProductService
+    let userService: UserService;
     let testProduct1: ProductDto;
     let testProduct2: ProductDto;
     beforeEach(async () => {
@@ -21,8 +21,8 @@ describe('GraphQL ProductResolver (e2e)', () => {
       app = moduleFixture.createNestApplication();
       await app.init();
   
-      userService = moduleFixture.get<UsersService>(UsersService);
-      productService = moduleFixture.get<ProductsService>(ProductsService);
+      userService = moduleFixture.get<UserService>(UserService);
+      productService = moduleFixture.get<ProductService>(ProductService);
       
     });
     beforeEach(async () => {
