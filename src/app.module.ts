@@ -11,7 +11,7 @@ import { Product } from './products/entities/product.entity';
 
 @Module({
   imports: [
-    UsersModule, 
+    
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
@@ -23,7 +23,8 @@ import { Product } from './products/entities/product.entity';
       entities: [User, Product],
       synchronize: true,
     }),
-    ProductsModule
+    ProductsModule,
+    UsersModule
 ],
   controllers: [AppController],
   providers: [AppService],

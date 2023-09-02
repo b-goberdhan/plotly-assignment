@@ -42,7 +42,7 @@ export class UsersResolver {
     return await this.usersService.update(updateUserInput);
   }
 
-  @Mutation(() => UserDto)
+  @Mutation(() => UserDeletedDto)
   async removeUser(@Args('id', { type: () => GraphQLString }) id: string): Promise<UserDeletedDto> {
     return this.usersService.remove(id);
   }

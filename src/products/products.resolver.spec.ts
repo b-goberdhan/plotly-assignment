@@ -14,7 +14,8 @@ describe('ProductsResolver', () => {
     findOne: jest.fn(),
     update: jest.fn(),
     remove: jest.fn()
-  }
+  };
+  
   beforeEach(async () => {
     jest.resetAllMocks();
     const module: TestingModule = await Test.createTestingModule({

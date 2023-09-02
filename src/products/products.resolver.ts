@@ -30,7 +30,7 @@ export class ProductsResolver {
     return await this.productsService.update(updateProductInput);
   }
 
-  @Mutation(() => ProductDto)
+  @Mutation(() => ProductDeletedDto)
   removeProduct(@Args('id', { type: () => GraphQLString }) id: string) : Promise<ProductDeletedDto> {
     return this.productsService.remove(id);
   }
