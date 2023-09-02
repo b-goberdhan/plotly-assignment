@@ -24,17 +24,17 @@ export class UserService {
       orders: await this.findAssociatedProducts(createUserInput.orderIds)
     });
 
-    return this.userToDto(user);
+    return this.userEntityToDto(user);
   }
 
 
   async findAll() : Promise<UserDto[]> {
     const users = await this.userRepository.find();
-    return users.map(this.userToDto);
+    return users.map(this.userEntityToDto);
   }
 
   async findOne(id: string): Promise<UserDto> {
-    return this.userToDto(await this.userRepository.findOneBy({ id }));
+    return this.userEntityToDto(await this.userRepository.findOneBy({ id }));
   }
 
   async update(updateUserInput: UpdateUserInput): Promise<UserDto> {
@@ -55,7 +55,7 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(userToBeUpdated);
 
-    return this.userToDto(savedUser);
+    return this.userEntityToDto(savedUser);
   }
 
   async remove(id: string) : Promise<UserDeletedDto> {
@@ -80,7 +80,7 @@ export class UserService {
     return products;
   }
 
-  private userToDto(user: UserEntity): UserDto {
+  private userEntityToDto(user: UserEntity): UserDto {
     return ({
       id: user?.id,
       name: user?.name,

@@ -17,11 +17,11 @@ export class ProductService {
     ) {}
 
   async create(createProductInput: CreateProductInput) : Promise<ProductDto> {
-    return this.productToDto(await this.productRepository.save({...createProductInput}));
+    return this.productEntityToDto(await this.productRepository.save({...createProductInput}));
   }
 
   async findAll() : Promise<ProductDto[]> {
-    return (await this.productRepository.find()).map(this.productToDto);
+    return (await this.productRepository.find()).map(this.productEntityToDto);
   }
 
   async findAllByUserId(userId: string) : Promise<ProductDto[]> {
@@ -31,12 +31,12 @@ export class ProductService {
       },
       where: { id: userId }
     });
-    return productsForUser.orders.map(this.productToDto);
+    return productsForUser.orders.map(this.productEntityToDto);
     
   }
 
   async findOne(id: string) : Promise<ProductDto> {
-    return this.productToDto((await this.productRepository.findOneBy({id})));
+    return this.productEntityToDto((await this.productRepository.findOneBy({id})));
   }
 
   async update(updateProductInput: UpdateProductInput) : Promise<ProductDto> {
@@ -47,7 +47,7 @@ export class ProductService {
 
       await this.productRepository.save(currentProduct);
     }
-    return this.productToDto(currentProduct);
+    return this.productEntityToDto(currentProduct);
   }
 
   async remove(id: string) : Promise<ProductDeletedDto> {
@@ -55,7 +55,7 @@ export class ProductService {
     return { isDeleted: deleteResult.affected === 1 };
   }
 
-  private productToDto(product: ProductEntity): ProductDto {
+  private productEntityToDto(product: ProductEntity): ProductDto {
     return ({
       id: product?.id,
       name: product?.name,
