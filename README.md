@@ -1,5 +1,6 @@
 # GraphQL Api Docs
-- run server with : `yarn start:dev`
+- install packages
+- run server with : `yarn start:dev` and navigate to `localhost:3000/graphql` (playground is enable on this project by default)
 - run unit tests with `yarn test`
 - run e2e tests with `yarn test:e2e` 
   > note that these tests generally cover a happy path to ensure most regerssions are mitigated. 
