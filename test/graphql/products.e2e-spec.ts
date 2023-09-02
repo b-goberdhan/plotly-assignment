@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Body, INestApplication } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { UsersService } from '../../src/users/users.service';
-import { UserDto } from '../../src/users/dto/user.dto';
 import { ProductsService } from '../../src/products/products.service';
 import { ProductDto } from 'src/products/dto/product.dto';
 
@@ -11,6 +10,7 @@ import { ProductDto } from 'src/products/dto/product.dto';
 describe('GraphQL ProductResolver (e2e)', () => {
     let app: INestApplication;
     let productService: ProductsService
+    let userService: UsersService;
     let testProduct1: ProductDto;
     let testProduct2: ProductDto;
     beforeEach(async () => {
@@ -23,6 +23,9 @@ describe('GraphQL ProductResolver (e2e)', () => {
   
       userService = moduleFixture.get<UsersService>(UsersService);
       productService = moduleFixture.get<ProductsService>(ProductsService);
+      
+    });
+    beforeEach(async () => {
       testProduct1 = await productService.create({
         name: "cool product",
         price: 1.20,
@@ -31,8 +34,8 @@ describe('GraphQL ProductResolver (e2e)', () => {
         name: "cool product 2",
         price: 1.96
       });
-      
     });
+
     describe('/graphql', () => {
       it('should get products', () => {
         return request(app.getHttpServer())

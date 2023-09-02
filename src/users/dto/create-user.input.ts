@@ -1,6 +1,5 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
-import { GraphQLInt, GraphQLList, GraphQLString } from 'graphql';
-import { ProductDto } from 'src/products/dto/product.dto';
+import { InputType, Field } from '@nestjs/graphql';
+import { GraphQLInt, GraphQLString } from 'graphql';
 
 @InputType()
 export class CreateUserInput {
@@ -15,5 +14,4 @@ export class CreateUserInput {
 
   @Field(() => [GraphQLString], { description: 'The orders beloning to the user', nullable: true} )
   orderIds: string[]
-
 }

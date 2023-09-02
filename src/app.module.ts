@@ -11,10 +11,9 @@ import { Product } from './products/entities/product.entity';
 
 @Module({
   imports: [
-    
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: true,
+      playground: true, 
       autoSchemaFile: true,
     }),
     TypeOrmModule.forRoot({

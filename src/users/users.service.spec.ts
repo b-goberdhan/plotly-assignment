@@ -11,10 +11,7 @@ import { ProductDto } from '../products/dto/product.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
-  const testUserId1 = "40134b1d-8d92-4288-8acd-cee7df2b9649";
-  const testUserId2 = "40134b1d-8d92-4288-8acd-cee7df2b9648"; 
-  const testUserName1 = "test-user-1";
-  const testUserName2 = "test-user-2"
+  
   const userRepositoryMock = {
     save: jest.fn(),
     find: jest.fn(),
@@ -25,6 +22,30 @@ describe('UsersService', () => {
   const productRepositoryMock = {
     find: jest.fn(),
   };
+
+  const testUserId1 = "40134b1d-8d92-4288-8acd-cee7df2b9649";
+  const testUserId2 = "40134b1d-8d92-4288-8acd-cee7df2b9648"; 
+  const testUserName1 = "test-user-1";
+  const testUserName2 = "test-user-2"
+
+  const createUsers = () => ([
+    {
+      id: testUserId1,
+      email: "le-email@1.com",
+      name: testUserName1,
+      age: 20,
+      orders: []
+    },
+    {
+      id: testUserId2,
+      email: "le-email@2.com",
+      name: testUserName2,
+      age: 20,
+      orders: []
+    }
+  ] as User[]);
+
+  const createOneUser = () => createUsers()[0];
   beforeEach(async () => {
     jest.resetAllMocks();
     const module: TestingModule = await Test.createTestingModule({
@@ -56,11 +77,12 @@ describe('UsersService', () => {
         age: 27,
         orderIds: []
       };
-  
       const newUser: User = {
         id: testUserId1,
+        name: testUserName1,
+        email: createUserInput.email,
+        age: createUserInput.age,
         orders: [],
-        ...createUserInput,
       };
   
       userRepositoryMock.save.mockResolvedValue(newUser)
@@ -71,9 +93,10 @@ describe('UsersService', () => {
         age: 27, 
         email: "le-email", 
         name: "test-user-1", 
-        orders: undefined
+        orders: []
       });
       expect(productRepositoryMock.find).not.toBeCalled();
+      expect(result).toEqual({ ...newUser } as UserDto)
     });
 
     it('should create with with orderIds', async () => {
@@ -87,8 +110,8 @@ describe('UsersService', () => {
       const newUser: User = {
         name: testUserName1,
         id: testUserId1,
-        email: "le-email",
-        age: 27,
+        email: createUserInput.email,
+        age: createUserInput.age,
         orders: [{
           id: "so-uuid-of-a-product",
           name: "my-product",
@@ -121,45 +144,24 @@ describe('UsersService', () => {
   });
 
   it('should findAll', async () => {
-    const users: User[] = [{
-        id: testUserId1,
-        email: "le-email",
-        name: testUserName1,
-        age: 20,
-        orders: undefined
-      },
-      {
-        id: testUserId2,
-        email: "le-email",
-        name: testUserName2,
-        age: 20,
-        orders: undefined
-      }
-    ]
+    const users: User[] = createUsers();
     userRepositoryMock.find.mockResolvedValue(users);
     const result = await service.findAll();
 
     expect(userRepositoryMock.find).toHaveBeenCalled();
     expect(userRepositoryMock.find).toHaveBeenCalledWith();
 
-    expect(result).toEqual(users as UserDto[]);
+    expect(result).toEqual([...users] as UserDto[]);
   });
 
   it('should findOne', async () => {
 
-    const user = {
-      id: testUserId1,
-      email: "le-email",
-      name: testUserName1,
-      age: 20,
-      orders: undefined
-    }
-    
+    const user = createOneUser();
     userRepositoryMock.findOneBy.mockResolvedValue(user);
     const result = await service.findOne(testUserId1);
 
     expect(userRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: testUserId1});
-    expect(result).toEqual(user);
+    expect(result).toEqual({...user } as UserDto);
     
   });
 
@@ -168,27 +170,21 @@ describe('UsersService', () => {
     it('should update without products', async () => {
       const updateUserInput: UpdateUserInput = {
         id: testUserId1,
-        age: 20,
+        age: 22,
         email: "new email"
       };
 
-      const oldUser: User = {
-        id: testUserId1,
-        name: "name",
-        age: 22,
-        email: "email",
-        orders: []
-      };
+      const userToUpdate: User = createOneUser();
 
       const updatedUser: User = {
-        id: testUserId1,
-        name: "name",
-        age: 20,
-        email: "new email",
-        orders: []
+        id: userToUpdate.id,
+        name: userToUpdate.name,
+        age: 22,
+        orders: userToUpdate.orders,
+        email: "new email"
       };
 
-      userRepositoryMock.findOne.mockResolvedValue(oldUser);
+      userRepositoryMock.findOne.mockResolvedValue(userToUpdate);
       userRepositoryMock.save.mockResolvedValue(updatedUser);
       productRepositoryMock.find.mockResolvedValue([]);
       
@@ -217,28 +213,22 @@ describe('UsersService', () => {
       }
       const updateUserInput: UpdateUserInput = {
         id: testUserId1,
-        age: 20,
+        age: 22,
         email: "new email",
         orderIds: ["some-product-id"]
       };
 
-      const oldUser: User = {
-        id: testUserId1,
-        name: "name",
-        age: 22,
-        email: "email",
-        orders: []
-      };
+      const userToBeUpdated = createOneUser();
 
       const updatedUser: User = {
         id: testUserId1,
-        name: "name",
-        age: 20,
+        name: userToBeUpdated.name,
+        age: 22,
         email: "new email",
         orders: [product]
       };
 
-      userRepositoryMock.findOne.mockResolvedValue(oldUser);
+      userRepositoryMock.findOne.mockResolvedValue(userToBeUpdated);
       userRepositoryMock.save.mockResolvedValue(updatedUser);
       productRepositoryMock.find.mockResolvedValue([product]);
       

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Body, INestApplication } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { UsersService } from '../../src/users/users.service';
@@ -13,6 +13,7 @@ describe('GraphQL UsersResolver (e2e)', () => {
   let productService: ProductsService
   let testUser: UserDto;
   let testProduct: ProductDto;
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -22,18 +23,22 @@ describe('GraphQL UsersResolver (e2e)', () => {
     await app.init();
 
     userService = moduleFixture.get<UsersService>(UsersService);
+    productService = moduleFixture.get<ProductsService>(ProductsService);
+    
+  });
+
+  beforeEach(async () => {
     testUser = await userService.create({
       name: "cool user",
       age: 20,
       email: "cool email",
       orderIds: []
     });
-    productService = moduleFixture.get<ProductsService>(ProductsService);
+    
     testProduct = await productService.create({
       name: "cool product",
       price: 1.20,
     })
-    
   });
 
   describe('/graphql', () => {

@@ -23,6 +23,25 @@ describe('UsersResolver', () => {
     findAllByUserId: jest.fn()
   };
 
+  const createUserDtos = () => ([
+    {
+      id: 'user-id', 
+      name: "name", 
+      email: "email",
+      age: 20,
+      orders: []
+    },
+    {
+      id: 'user-id-2', 
+      name: "name-2", 
+      email: "email-2",
+      age: 22,
+      orders: []
+    }
+  ] as UserDto[]);
+
+  const createOneUserDto = () => createUserDtos()[0] as UserDto;
+
   beforeEach(async () => {
     jest.resetAllMocks();
     const module: TestingModule = await Test.createTestingModule({
@@ -48,12 +67,7 @@ describe('UsersResolver', () => {
 
   describe('resolve field', () => {
     it('should resolve orders', async () => {
-      const user: UserDto = { 
-        id: 'user-id', 
-        name: "name", 
-        email: "email",
-        age: 20
-      }
+      const user: UserDto = createOneUserDto();
 
       const products: ProductDto[] = [
         {
@@ -74,20 +88,7 @@ describe('UsersResolver', () => {
 
   describe('queries', () => {
     it('should find all users', async () => {
-      const users: UserDto[] = [
-        { 
-          id: 'user-id', 
-          name: "name", 
-          email: "email",
-          age: 20
-        },
-        { 
-          id: 'user-id-2', 
-          name: "name-2", 
-          email: "email-2",
-          age: 22
-        },
-      ];
+      const users: UserDto[] = createUserDtos();
 
       userServiceMock.findAll.mockResolvedValue(users);
       const result = await resolver.findAll();
@@ -101,7 +102,8 @@ describe('UsersResolver', () => {
         id: 'user-id', 
         name: "name", 
         email: "email",
-        age: 20
+        age: 20,
+        orders: []
       };
 
       userServiceMock.findOne.mockResolvedValue(user);
@@ -122,7 +124,7 @@ describe('UsersResolver', () => {
       };
 
       const userDto: UserDto = {
-        id: "new-user-id",
+        id: createOneUserDto().id,
         name: createUserInput.name,
         email: createUserInput.email,
         age: createUserInput.age,
@@ -146,17 +148,13 @@ describe('UsersResolver', () => {
         orderIds: ["some-product-id"],
       };
 
-      const userDto: UserDto = {
-        id: "new-user-id",
-        name: updateUserInput.name,
-        email: updateUserInput.email,
-        age: updateUserInput.age,
-        orders: [{
-          id: "some-product-id",
-          name: "some product",
-          price: 1.00
-        }]
-      }
+      const userDto: UserDto = createOneUserDto();
+      const productDto: ProductDto = {
+        id: "some-product-id",
+        name: "some product",
+        price: 1.00
+      };
+      userDto.orders = [productDto]
 
       userServiceMock.update.mockResolvedValue(userDto);
 

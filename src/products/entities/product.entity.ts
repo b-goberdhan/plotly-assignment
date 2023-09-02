@@ -9,7 +9,7 @@ export class Product {
   @Column()
   name: string;
   
-  @Column({type: 'decimal', precision: 2})
+  @Column({type: 'decimal'})
   price: number;
 
   @ManyToMany(() => User, (user) => user.orders)

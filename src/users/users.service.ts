@@ -72,6 +72,11 @@ export class UsersService {
         }
       })
     }
+    // if an empty list was sumbitted this implies we want to 
+    // clear the product listings for a given user.
+    if (productIds?.length === 0) {
+      products = []
+    }
     return products;
   }
 

@@ -10,7 +10,8 @@ import { UpdateProductInput } from './dto/update-product.input';
 describe('ProductsService', () => {
   let service: ProductsService;
   const testProductId1 = "40134b1d-8d92-4288-8acd-cee7df2b9649";
-  const testProductId2 = "40134b1d-8d92-4288-8acd-cee7df2b9648";
+  const testProductId2 = "50134b1d-8d92-4288-8acd-cee7df2b9648";
+
   const productRepositoryMock = {
     save: jest.fn(),
     find: jest.fn(),
@@ -21,6 +22,8 @@ describe('ProductsService', () => {
   const userRepositoryMock = {
     findOne: jest.fn(),
   }
+
+
   beforeEach(async () => {
     jest.resetAllMocks()
     const module: TestingModule = await Test.createTestingModule({
@@ -41,7 +44,6 @@ describe('ProductsService', () => {
   });
 
   it('should be defined', () => {
-
     expect(service).toBeDefined();
   });
 
@@ -59,11 +61,8 @@ describe('ProductsService', () => {
     const result = await service.create(createProductInput);
 
     expect(productRepositoryMock.save).toHaveBeenCalledTimes(1);
-    expect(productRepositoryMock.save).toHaveBeenCalledWith({
-      ...createProductInput
-    });
-
-    expect(result).toEqual({
+    expect(productRepositoryMock.save).toHaveBeenCalledWith({ ...createProductInput });
+    expect(result).toStrictEqual({
       id: testProductId1,
       ...createProductInput
     })
@@ -79,8 +78,8 @@ describe('ProductsService', () => {
       },
       {
         id: testProductId2,
-        name: "test-product-1",
-        price: 4.21
+        name: "test-product-2",
+        price: 5.21
       }
     ];
     
@@ -90,12 +89,12 @@ describe('ProductsService', () => {
     expect(productRepositoryMock.find).toHaveBeenCalledTimes(1);
     expect(productRepositoryMock.find).toHaveBeenCalledWith();
     
-    expect(result).toEqual([...products] as ProductDto[]);
+    expect(result).toStrictEqual([...products]);
     
   });
 
   it('should findOne product', async () => {
-    const product = {
+    const product: Product = {
       id: testProductId1,
       name: "test-product-1",
       price: 1.23
@@ -103,12 +102,11 @@ describe('ProductsService', () => {
     productRepositoryMock.findOneBy.mockResolvedValue(product)
 
     const result = await service.findOne(testProductId1);
-
     
     expect(productRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
     expect(productRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: testProductId1});
 
-    expect(result).toEqual({...product});
+    expect(result).toStrictEqual({...product} as ProductDto);
   });
 
   describe("update product", () => {
@@ -125,8 +123,9 @@ describe('ProductsService', () => {
         price: 1.00
       }
       
-      const expectedResult = {
-        ...updatedProductInput, 
+      const expectedResult: ProductDto = {
+        id: updatedProductInput.id,
+        name: updatedProductInput.name, 
         price: 1.00
       }
       productRepositoryMock.findOneBy.mockResolvedValue(product);
@@ -137,7 +136,7 @@ describe('ProductsService', () => {
       
       expect(productRepositoryMock.save).toHaveBeenCalledWith(expectedResult);
 
-      expect(result).toEqual({ ...expectedResult });
+      expect(result).toStrictEqual({ ...expectedResult });
 
     });
 
@@ -155,7 +154,7 @@ describe('ProductsService', () => {
       
       expect(productRepositoryMock.save).not.toHaveBeenCalled();
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         id: undefined,
         name: undefined,
         price: undefined

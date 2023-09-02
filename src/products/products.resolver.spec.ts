@@ -15,7 +15,22 @@ describe('ProductsResolver', () => {
     update: jest.fn(),
     remove: jest.fn()
   };
-  
+
+  const createProducts = () => ([
+    {
+      id: "product-id",
+      name: "cool thing",
+      price: 1.22
+    },
+    {
+      id: "product-id-2",
+      name: "cool thing 2",
+      price: 2.44
+    }
+  ]);
+
+  const createOneProduct = () => createProducts()[0];
+
   beforeEach(async () => {
     jest.resetAllMocks();
     const module: TestingModule = await Test.createTestingModule({
@@ -38,18 +53,7 @@ describe('ProductsResolver', () => {
   describe('queries', () => {
     
     it("should find all products", async () => {
-      const productDtos: ProductDto[] = [
-        {
-          id: "product-id",
-          name: "cool thing",
-          price: 1.33
-        },
-        {
-          id: "product-id-2",
-          name: "cool thing 2",
-          price: 4000.20
-        }
-      ];
+      const productDtos: ProductDto[] = createProducts();
       productServiceMock.findAll.mockResolvedValue(productDtos);
 
       const result = await resolver.findAll();
@@ -63,11 +67,7 @@ describe('ProductsResolver', () => {
     it("should find one product", async () => {
       const productId = 'product-id';
 
-      const productDto: ProductDto = {
-          id: productId,
-          name: "cool thing",
-          price: 1.33
-      };
+      const productDto: ProductDto = createOneProduct();
       productServiceMock.findOne.mockResolvedValue(productDto);
 
       const result = await resolver.findOne(productId);
@@ -86,7 +86,7 @@ describe('ProductsResolver', () => {
       }
       
       const createdProductDto: ProductDto = {
-        id: "neat-id",
+        id: createOneProduct().id,
         ...createProductInput,
       }
 
@@ -98,14 +98,15 @@ describe('ProductsResolver', () => {
     });
 
     it('can update a product', async () => {
+      const productId = createOneProduct().id;
       const updateProductInput: UpdateProductInput = {
-        id: "some-id",
-        name: "new product",
+        id: productId,
+        name: "updated product",
         price: 1.00,
       }
       
       const product: ProductDto = {
-        id: "some-id",
+        id: productId,
         name: updateProductInput.name,
         price: updateProductInput.price
       } 
