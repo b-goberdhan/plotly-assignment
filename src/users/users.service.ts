@@ -6,7 +6,7 @@ import { In, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserDto } from './dto/user.dto';
 import { UserDeletedDto } from './dto/user-deleted.dto';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class UsersService {
@@ -38,13 +38,20 @@ export class UsersService {
   }
 
   async update(updateUserInput: UpdateUserInput): Promise<UserDto> {
-    // leverage relation here, no need for product repository in this!
-    const userToBeUpdated =  await this.userRepository.findOneBy({ id: updateUserInput.id, },);
+
+    const userToBeUpdated =  await this.userRepository.findOne({
+      where: {
+        id: updateUserInput.id
+      },
+      relations: {
+        orders: true
+      }
+    });
     const newAssociatedProducts = await this.findAssociatedProducts(updateUserInput.orderIds)
-    userToBeUpdated.age = updateUserInput.age || userToBeUpdated.age;
-    userToBeUpdated.email = updateUserInput.email || userToBeUpdated.email;
-    userToBeUpdated.name = updateUserInput.name || userToBeUpdated.name;
-    userToBeUpdated.orders = newAssociatedProducts || userToBeUpdated.orders
+    userToBeUpdated.age = updateUserInput.age ?? userToBeUpdated.age;
+    userToBeUpdated.email = updateUserInput.email ?? userToBeUpdated.email;
+    userToBeUpdated.name = updateUserInput.name ?? userToBeUpdated.name;
+    userToBeUpdated.orders = newAssociatedProducts ?? userToBeUpdated.orders
 
     const savedUser = await this.userRepository.save(userToBeUpdated);
 

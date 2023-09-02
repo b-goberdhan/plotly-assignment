@@ -5,15 +5,16 @@ import { Product } from './entities/product.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { ProductDto } from './dto/product.dto';
+import { UpdateProductInput } from './dto/update-product.input';
 
 describe('ProductsService', () => {
   let service: ProductsService;
-  const testProductId1 = "40134b1d-8d92-4288-8acd-cee7df2b9648";
+  const testProductId1 = "40134b1d-8d92-4288-8acd-cee7df2b9649";
   const testProductId2 = "40134b1d-8d92-4288-8acd-cee7df2b9648";
   const productRepositoryMock = {
     save: jest.fn(),
     find: jest.fn(),
-    findByOne: jest.fn(),
+    findOneBy: jest.fn(),
     delete: jest.fn(),
   };
 
@@ -93,7 +94,94 @@ describe('ProductsService', () => {
     
   });
 
-  it('should findOne product', async() => {
+  it('should findOne product', async () => {
+    const product = {
+      id: testProductId1,
+      name: "test-product-1",
+      price: 1.23
+    }
+    productRepositoryMock.findOneBy.mockResolvedValue(product)
+
+    const result = await service.findOne(testProductId1);
+
     
+    expect(productRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
+    expect(productRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: testProductId1});
+
+    expect(result).toEqual({...product});
+  });
+
+  describe("update product", () => {
+    it('should update product', async () => {
+      
+      const updatedProductInput: UpdateProductInput = {
+        id: testProductId1,
+        name: "test-product-1-updated",
+      }
+
+      const product: Product = {
+        id: testProductId1,
+        name: "test-product-1",
+        price: 1.00
+      }
+      
+      const expectedResult = {
+        ...updatedProductInput, 
+        price: 1.00
+      }
+      productRepositoryMock.findOneBy.mockResolvedValue(product);
+      
+      const result = await service.update(testProductId1, updatedProductInput);
+      expect(productRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
+      expect(productRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: updatedProductInput.id });
+      
+      expect(productRepositoryMock.save).toHaveBeenCalledWith(expectedResult);
+
+      expect(result).toEqual({ ...expectedResult });
+
+    });
+
+    it('should handled product not found', async () => {
+      const updatedProductInput: UpdateProductInput = {
+        id: testProductId1,
+        name: "test-product-1-updated",
+      }
+
+      productRepositoryMock.findOneBy.mockResolvedValue(null);
+      
+      const result = await service.update(testProductId1, updatedProductInput);
+      expect(productRepositoryMock.findOneBy).toHaveBeenCalledTimes(1);
+      expect(productRepositoryMock.findOneBy).toHaveBeenCalledWith({ id: updatedProductInput.id });
+      
+      expect(productRepositoryMock.save).not.toHaveBeenCalled();
+
+      expect(result).toEqual({
+        id: undefined,
+        name: undefined,
+        price: undefined
+      });
+    });
+  })
+  
+  describe("remove product", () => {
+    it('should indicate remove a product succeeded', async () => {
+
+      productRepositoryMock.delete.mockResolvedValue({
+        affected: 1
+      })
+      const result = await service.remove(testProductId1);
+      expect(productRepositoryMock.delete).toBeCalledWith({id: testProductId1});
+      expect(result).toEqual({ isDeleted: true });
+    });
+
+    it('should indicate remove a product did not succeed', async () => {
+
+      productRepositoryMock.delete.mockResolvedValue({
+        affected: 0
+      })
+      const result = await service.remove(testProductId1);
+      expect(productRepositoryMock.delete).toBeCalledWith({id: testProductId1});
+      expect(result).toEqual({ isDeleted: false });
+    });
   });
 });

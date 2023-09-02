@@ -39,11 +39,11 @@ export class ProductsService {
     return this.productToDto((await this.productRepository.findOneBy({id})));
   }
 
-  async update(id: string, updateProductInput: UpdateProductInput) : Promise<ProductDto> {
-    const currentProduct = await this.productRepository.findOneBy({ id });
+  async update(updateProductInput: UpdateProductInput) : Promise<ProductDto> {
+    const currentProduct = await this.productRepository.findOneBy({ id: updateProductInput.id });
     if (currentProduct) {
-      currentProduct.name = updateProductInput.name;
-      currentProduct.price = updateProductInput.price;
+      currentProduct.name = updateProductInput.name ?? currentProduct.name;
+      currentProduct.price = updateProductInput.price ?? currentProduct.price;
 
       await this.productRepository.save(currentProduct);
     }

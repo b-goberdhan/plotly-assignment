@@ -10,11 +10,6 @@ import { ProductDeletedDto } from './dto/product-deleted.dto';
 export class ProductsResolver {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Mutation(() => ProductDto)
-  async createProduct(@Args('createProductInput') createProductInput: CreateProductInput) : Promise<ProductDto> {
-    return this.productsService.create(createProductInput);
-  }
-
   @Query(() => [ProductDto], { name: 'products' })
   async findAll() : Promise<ProductDto[]> {
     return this.productsService.findAll();
@@ -26,8 +21,13 @@ export class ProductsResolver {
   }
 
   @Mutation(() => ProductDto)
+  async createProduct(@Args('createProductInput') createProductInput: CreateProductInput) : Promise<ProductDto> {
+    return this.productsService.create(createProductInput);
+  }
+
+  @Mutation(() => ProductDto)
   async updateProduct(@Args('updateProductInput') updateProductInput: UpdateProductInput) : Promise<ProductDto> {
-    return await this.productsService.update(updateProductInput.id, updateProductInput);
+    return await this.productsService.update(updateProductInput);
   }
 
   @Mutation(() => ProductDto)
