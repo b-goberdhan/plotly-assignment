@@ -1,8 +1,8 @@
-import { Product } from '../../products/entities/product.entity';
+import { ProductEntity } from '../../products/entities/product.entity';
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class User {
+@Entity("users")
+export class UserEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -15,7 +15,7 @@ export class User {
   @Column()
   age: number;
   
-  @ManyToMany(() => Product, (product) => product.id)
+  @ManyToMany(() => ProductEntity, (product) => product.id)
   @JoinTable()
-  orders: Product[];
+  orders: ProductEntity[];
 }

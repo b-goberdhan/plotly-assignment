@@ -1,8 +1,8 @@
-import { User } from '../../users/entities/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class Product {
+@Entity("products")
+export class ProductEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
   
@@ -12,6 +12,6 @@ export class Product {
   @Column({type: 'decimal'})
   price: number;
 
-  @ManyToMany(() => User, (user) => user.orders)
-  users?: User[];
+  @ManyToMany(() => UserEntity, (user) => user.orders)
+  users?: UserEntity[];
 }

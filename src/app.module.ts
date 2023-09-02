@@ -5,9 +5,9 @@ import { UsersModule } from './users/users.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
+import { UserEntity } from './users/entities/user.entity';
 import { ProductsModule } from './products/products.module';
-import { Product } from './products/entities/product.entity';
+import { ProductEntity } from './products/entities/product.entity';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { Product } from './products/entities/product.entity';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: ':memory:',
-      entities: [User, Product],
+      entities: [UserEntity, ProductEntity],
       synchronize: true,
     }),
     ProductsModule,

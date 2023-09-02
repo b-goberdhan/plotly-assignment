@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsService } from './products.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Product } from './entities/product.entity';
-import { User } from '../users/entities/user.entity';
+import { ProductEntity } from './entities/product.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { ProductDto } from './dto/product.dto';
 import { UpdateProductInput } from './dto/update-product.input';
@@ -30,11 +30,11 @@ describe('ProductsService', () => {
       providers: [
         ProductsService,
         { 
-          provide: getRepositoryToken(Product),
+          provide: getRepositoryToken(ProductEntity),
           useValue: productRepositoryMock
         },
         { 
-          provide: getRepositoryToken(User),
+          provide: getRepositoryToken(UserEntity),
           useValue: userRepositoryMock
         }
       ],
@@ -70,7 +70,7 @@ describe('ProductsService', () => {
   });
 
   it('should findAll products', async () => {
-    const products: Product[] = [
+    const products: ProductEntity[] = [
       {
         id: testProductId1,
         name: "test-product-1",
@@ -94,7 +94,7 @@ describe('ProductsService', () => {
   });
 
   it('should findOne product', async () => {
-    const product: Product = {
+    const product: ProductEntity = {
       id: testProductId1,
       name: "test-product-1",
       price: 1.23
@@ -117,7 +117,7 @@ describe('ProductsService', () => {
         name: "test-product-1-updated",
       }
 
-      const product: Product = {
+      const product: ProductEntity = {
         id: testProductId1,
         name: "test-product-1",
         price: 1.00

@@ -2,18 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './entities/product.entity';
+import { ProductEntity } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { ProductDto } from './dto/product.dto';
 import { ProductDeletedDto } from './dto/product-deleted.dto';
-import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
 
   constructor(
-    @InjectRepository(Product) private readonly productRepository: Repository<Product>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>
+    @InjectRepository(ProductEntity) private readonly productRepository: Repository<ProductEntity>,
+    @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>
     ) {}
 
   async create(createProductInput: CreateProductInput) : Promise<ProductDto> {
@@ -55,7 +55,7 @@ export class ProductsService {
     return { isDeleted: deleteResult.affected === 1 };
   }
 
-  private productToDto(product: Product): ProductDto {
+  private productToDto(product: ProductEntity): ProductDto {
     return ({
       id: product?.id,
       name: product?.name,

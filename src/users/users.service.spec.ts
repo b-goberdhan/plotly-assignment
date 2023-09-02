@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Product } from '../products/entities/product.entity';
+import { UserEntity } from './entities/user.entity';
+import { ProductEntity } from '../products/entities/product.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { In } from 'typeorm';
 import { UserDto } from './dto/user.dto';
@@ -43,7 +43,7 @@ describe('UsersService', () => {
       age: 20,
       orders: []
     }
-  ] as User[]);
+  ] as UserEntity[]);
 
   const createOneUser = () => createUsers()[0];
   beforeEach(async () => {
@@ -52,11 +52,11 @@ describe('UsersService', () => {
       providers: [
         UsersService,
         {
-          provide: getRepositoryToken(User),
+          provide: getRepositoryToken(UserEntity),
           useValue: userRepositoryMock
         },
         {
-          provide: getRepositoryToken(Product),
+          provide: getRepositoryToken(ProductEntity),
           useValue: productRepositoryMock
         }
       ],
@@ -77,7 +77,7 @@ describe('UsersService', () => {
         age: 27,
         orderIds: []
       };
-      const newUser: User = {
+      const newUser: UserEntity = {
         id: testUserId1,
         name: testUserName1,
         email: createUserInput.email,
@@ -107,7 +107,7 @@ describe('UsersService', () => {
         orderIds: ["so-uuid-of-a-product"]
       };
   
-      const newUser: User = {
+      const newUser: UserEntity = {
         name: testUserName1,
         id: testUserId1,
         email: createUserInput.email,
@@ -144,7 +144,7 @@ describe('UsersService', () => {
   });
 
   it('should findAll', async () => {
-    const users: User[] = createUsers();
+    const users: UserEntity[] = createUsers();
     userRepositoryMock.find.mockResolvedValue(users);
     const result = await service.findAll();
 
@@ -174,9 +174,9 @@ describe('UsersService', () => {
         email: "new email"
       };
 
-      const userToUpdate: User = createOneUser();
+      const userToUpdate: UserEntity = createOneUser();
 
-      const updatedUser: User = {
+      const updatedUser: UserEntity = {
         id: userToUpdate.id,
         name: userToUpdate.name,
         age: 22,
@@ -206,7 +206,7 @@ describe('UsersService', () => {
     });
 
     it('should update products', async () => {
-      const product: Product = {
+      const product: ProductEntity = {
         id: "some-product-id",
         name: "cool product",
         price: 1.00
@@ -220,7 +220,7 @@ describe('UsersService', () => {
 
       const userToBeUpdated = createOneUser();
 
-      const updatedUser: User = {
+      const updatedUser: UserEntity = {
         id: testUserId1,
         name: userToBeUpdated.name,
         age: 22,

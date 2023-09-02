@@ -3,16 +3,16 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { UserDto } from './dto/user.dto';
 import { UserDeletedDto } from './dto/user-deleted.dto';
-import { Product } from '../products/entities/product.entity';
+import { ProductEntity } from '../products/entities/product.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Product) private readonly productRepository: Repository<Product>
+    @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(ProductEntity) private readonly productRepository: Repository<ProductEntity>
   ) {}
   
   async create(createUserInput: CreateUserInput): Promise<UserDto> {
@@ -63,7 +63,7 @@ export class UsersService {
     return { isDeleted: deleteResult.affected === 1 }
   }
 
-  private async findAssociatedProducts(productIds: string[]) : Promise<Product[] | undefined > {
+  private async findAssociatedProducts(productIds: string[]) : Promise<ProductEntity[] | undefined > {
     let products;
     if (productIds && productIds.length > 0) {
       products = await this.productRepository.find({
@@ -80,7 +80,7 @@ export class UsersService {
     return products;
   }
 
-  private userToDto(user: User): UserDto {
+  private userToDto(user: UserEntity): UserDto {
     return ({
       id: user?.id,
       name: user?.name,
