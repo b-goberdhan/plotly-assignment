@@ -5,8 +5,8 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { GraphQLString } from 'graphql';
 import { UserDto } from './dto/user.dto';
 import { UserDeletedDto } from './dto/user-deleted.dto';
-import { ProductDto } from 'src/products/dto/product.dto';
-import { ProductsService } from 'src/products/products.service';
+import { ProductDto } from '../products/dto/product.dto';
+import { ProductsService } from '../products/products.service';
 
 @Resolver(() => UserDto)
 export class UsersResolver {
